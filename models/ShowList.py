@@ -18,7 +18,8 @@ __status__ = "Dev"
 class ShowList():
   view_name='show_list'
   def __init__(self,bc:BaseClass):
-    self.is_create()
+    if self.is_create()!=1;
+      self.create_view()
     
   def is_created(self,conn):
     """SELECT EXISTS (
@@ -44,21 +45,30 @@ class ShowList():
   @season.setter
   def season(self,season):self._season=season
 
-  def create_table(self,conn,bc:BaseClass):
+  def create_view(self,conn,bc:BaseClass):
     try:
-      sql_create_table = """ CREATE TABLE IF NOT EXISTS tv_show (
-                                          id integer PRIMARY KEY,
-                                          show_name text NOT NULL,
-                                          season integer NOT NULL,
-                                          complete integer DEFAULT 0
-                                      )x; """
+      self.create_base_tables()
+      sql_create_table = """ CREATE VIEW IF NOT EXISTS AS ...; """
       conn.execute(sql_create_table)
     except:
       bc.log.error("\t"+":"+traceback.format_exc())
       raise SQLCreateError
-Footer
-© 2022 GitHub, Inc.
-Footer navigation
-Terms
-Privacy
-Security
+      
+  def create_base_tables(self,conn,bc:BaseClass): 
+    section = PlexSections(self._bc)
+    if section.is_create()!=1;
+      section.create_table()
+
+    shows = TvShows(self._bc)
+    if shows.is_create()!=1;
+      shows.create_table()
+
+    seasons = Seasons(self._bc)
+    if seasons.is_create()!=1;
+      seasons.create_table()
+
+    episodes = Episodes(self._bc)
+    if episodes.is_create()!=1;
+      episodes.create_table()
+
+      
