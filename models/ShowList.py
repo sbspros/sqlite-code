@@ -3,7 +3,7 @@ from model.Episodes import Episodes
 from model.Seasons import Seasons
 from model.TVShows import TVShows
 from model.PlexSections import PlexSections
-
+from table.ShowList import ShowList as tableShowList
 
 import traceback
 
@@ -30,25 +30,22 @@ class ShowList():
     WHERE 
         type='view' AND 
         name='{view}'
-    );""".format(view=cls.view_name)
+    );""".format(view=ShowList.view_list)
     return conn.execute(sql_create_table)
 
-  @property
-  def show_name(self):return self._show_name
-
-  @property
-  def season(self):return self._season
-
-  @show_name.setter
-  def show_name(self,show_name):self._show_name=show_name
-
-  @season.setter
-  def season(self,season):self._season=season
-
+  def read_list_show(self):
+    try:
+      table_list = tableShowList(self._bc)
+      select_query = """ SELECT * FROM {view}; """.format(view=ShowList.view_list)
+      return table_list.__print__(conn.execute(select_query))
+    except:
+      bc.log.error("\t"+":"+traceback.format_exc())
+      raise SQLCreateError
+  
   def create_view(self,conn,bc:BaseClass):
     try:
       self.create_base_tables()
-      sql_create_table = """ CREATE VIEW IF NOT EXISTS AS ...; """
+      sql_create_table = """ CREATE VIEW IF NOT EXISTS  {view} AS ...; """.format(view=ShowList.view_list)
       conn.execute(sql_create_table)
     except:
       bc.log.error("\t"+":"+traceback.format_exc())
