@@ -1,6 +1,4 @@
 from common.BaseClass import BaseClass
-from table.ShowList import ShowList as tableShowList
-
 import traceback
 
 __author__ = "Richard Chamberlain"
