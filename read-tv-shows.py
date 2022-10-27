@@ -1,5 +1,5 @@
 from common.BaseClass import BaseClass
-from SqlConnection import SQLConnection
+from models.ShowList import ShowList
 import os
 import inspect
 
@@ -14,9 +14,8 @@ __status__ = "Dev"
 
 if __name__ == '__main__':
     bc=BaseClass('config.ini')
-    conn=SQLConnection(bc,'TvShows','db/media.db')
-    if conn.is_created():
-        print("Table has already be created")
-    else:
-        conn.create_table()
-        print("Table has been created")
+    shows=ShowList(bc,'db/media.db')
+    if !shows.is_created():
+        show.create_veiw()
+        print("View has been created")
+    print(shows.list_show)
