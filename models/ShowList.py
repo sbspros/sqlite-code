@@ -36,7 +36,7 @@ class ShowList():
   def read_list_show(self):
     try:
       table_list = tableShowList(self._bc)
-      select_query = """ SELECT * FROM {view}; """.format(view=ShowList.view_list)
+      select_query = """ SELECT * FROM {view}; """.format(view=ShowList.view_name)
       return table_list.__print__(conn.execute(select_query))
     except:
       bc.log.error("\t"+":"+traceback.format_exc())
@@ -45,8 +45,8 @@ class ShowList():
   def create_view(self,conn,bc:BaseClass):
     try:
       self.create_base_tables()
-      sql_create_table = """ CREATE VIEW IF NOT EXISTS  {view} AS ...; """.format(view=ShowList.view_list)
-      conn.execute(sql_create_table)
+      sql_create_view = """ CREATE VIEW IF NOT EXISTS  {view} AS ...; """.format(view=ShowList.view_name)
+      conn.execute(sql_create_view)
     except:
       bc.log.error("\t"+":"+traceback.format_exc())
       raise SQLCreateError
