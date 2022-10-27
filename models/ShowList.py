@@ -1,4 +1,10 @@
 from common.BaseClass import BaseClass
+from model.Episodes import Episodes
+from model.Seasons import Seasons
+from model.TVShows import TVShows
+from model.PlexSections import PlexSections
+
+
 import traceback
 
 __author__ = "Richard Chamberlain"
@@ -10,9 +16,9 @@ __email__ = "richard@sbspros.ca"
 __status__ = "Dev"
 
 class ShowList():
-
+  view_name='show_list'
   def __init__(self,bc:BaseClass):
-
+    self.is_create()
     
   def is_created(self,conn):
     """SELECT EXISTS (
@@ -21,10 +27,10 @@ class ShowList():
     FROM 
         sqlite_schema 
     WHERE 
-        type='table' AND 
-        name='Customers'
-    );"""
-    return False
+        type='view' AND 
+        name='{view}'
+    );""".format(view=cls.view_name)
+    return conn.execute(sql_create_table)
 
   @property
   def show_name(self):return self._show_name
