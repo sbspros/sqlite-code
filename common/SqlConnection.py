@@ -19,10 +19,25 @@ class ConnectFailed(Exception):
 
 class SQLConnection():
 
-  def __init__(self,bc:BaseClass,business_object:str,database:str)
-    self._bc=bc
-    try:
-      self._conn=sqlite3.connect(database)
-    except:
-      self._bc.log.error("\t"+":"+traceback.format_exc())
-      raise ConnectFailed
+    def __init__(self,bc:BaseClass,business_object:str,database:str):
+        self._bc=bc
+        try:
+            ## Load the clase in
+            class_name=business_object
+            bus_class = __import__(class_name, globals(), locals(), [], 0)
+            self._bus_obj = getattr(bus_class, business_object)
+            self._conn=sqlite3.connect(database)
+        except:
+            self._bc.log.error("\t"+":"+traceback.format_exc())
+            raise ConnectFailed
+
+    ## Does the table exists
+    def is_created(self):
+        return self._bus_obj.is_created(self._bus_obj,self._conn)
+
+    ## Create table
+    def create_table(self):
+        try:
+            self._bus_obj.create_table(self._bus_obj,self._conn,self._bc)
+        except SQLCreateError as e:
+            pass
