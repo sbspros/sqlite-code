@@ -18,4 +18,4 @@ if __name__ == '__main__':
     if !shows.is_created():
         show.create_veiw()
         print("View has been created")
-    print(shows.list_show)
+    print(shows.list_show())
