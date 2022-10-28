@@ -16,7 +16,7 @@ if __name__ == '__main__':
     bc=BaseClass('config.ini')
     conn=SqlConnection('db/media.db')
     shows=ShowList(bc,conn)
-    if !shows.is_created():
+    if not shows.is_created():
         show.create_veiw()
         print("View has been created")
     print(shows.list_show())
