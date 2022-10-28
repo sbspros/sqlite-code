@@ -30,7 +30,7 @@ class ShowList():
     Check to see if the view has been created
   """
   def is_created(self):
-    sql_table_check="""SELECT EXISTS (
+    return self._conn.local_exec("""SELECT EXISTS (
     SELECT 
         name
     FROM 
@@ -38,24 +38,20 @@ class ShowList():
     WHERE 
         type='view' AND 
         name='{view}'
-    );""".format(view=ShowList.view_list)
-    return self._conn.local_exec(sql_table_check)
+    );""".format(view=ShowList.view_list))
   
   """
     Reads all records from the view
   """
   def read_list_show(self):
-    show_list=[]
-    select_query = """ SELECT * FROM {view}; """.format(view=ShowList.view_name)
-    return self._conn.local_exec(select_query)
+    return self._conn.local_exec(select_query = """ SELECT * FROM {view}; """.format(view=ShowList.view_name))
   
   """
     Creates the view if it does not exists
   """
   def create_view(self):
     self.create_base_tables()
-    sql_create_view = """ CREATE VIEW IF NOT EXISTS  {view} AS ...; """.format(view=ShowList.view_name)
-    return self._conn.local_exec(sql_create_view)
+    return self._conn.local_exec(""" CREATE VIEW IF NOT EXISTS  {view} AS ...; """.format(view=ShowList.view_name))
 
   """
     Creates base tables the view is made of if it doesn't exists
