@@ -11,6 +11,11 @@ __email__ = "richard@sbspros.ca"
 __status__ = "Dev"
 
 
+class AppException(Exception):
+    def __init__(self):
+        self.msg = 'Application has stopped, please check error logs'
+        super().__init__(self.msg)
+
 class BaseClass:
     """ 
     This class sets up the logging and ini variables 
@@ -34,7 +39,14 @@ class BaseClass:
             
         except LoggingException as err:
             self._log_error=True
-
+        except AppException as err:
+            print('Application has stopped, please check error logs')
+        except :
+            bc.log.error("\t:"+traceback.format_exc())
+        final:
+            print('Application has ended')
+            return 0
+            
 
 
 
