@@ -1,9 +1,9 @@
-from common.BaseClass import BaseClass,AppError
+from common.BaseClass import BaseClass
 from model.Episodes import Episodes
 from model.Seasons import Seasons
 from model.TVShows import TVShows
 from model.PlexSections import PlexSections
-from common.SqlConnection import SqlConnection,SQLExecError,SQLError
+from common.SqlConnection import SqlConnection
 from table.ShowList import ShowList as tableShowList
 import traceback
 
@@ -15,15 +15,21 @@ __maintainer__ = "Richard Chamberlain"
 __email__ = "richard@sbspros.ca"
 __status__ = "Dev"
 
+"""
+  Create/List data from a show view
+  
+  It links PlexSection, Tv Show, Seasons and Episode from a local database
+"""
 class ShowList():
   view_name='show_list'
   def __init__(self,bc:BaseClass,conn:SqlConnection):
     self._conn=conn
     if self.is_create()!=1;
       self.create_view()
-    
+  """
+    Check to see if the view has been created
+  """
   def is_created(self):
-    create_flag=0
     sql_table_check="""SELECT EXISTS (
     SELECT 
         name
@@ -33,39 +39,28 @@ class ShowList():
         type='view' AND 
         name='{view}'
     );""".format(view=ShowList.view_list)
-    try:
-      create_flag=self._conn.execute(sql_table_check)
-    except SQLExecError:
-      raise SQLError
-     except:
-      bc.log.error("\t"+":"+traceback.format_exc())
-      raise AppError
-    final return create_flag      
+    return self._conn.local_exec(sql_table_check)
   
-  
+  """
+    Reads all records from the view
+  """
   def read_list_show(self):
     show_list=[]
-    try:
-      table_list = tableShowList(self._bc)
-      select_query = """ SELECT * FROM {view}; """.format(view=ShowList.view_name)
-      show_list= table_list.__print__(conn.execute(select_query))
-    except SQLExecError:
-      raise SQLError
-     except:
-      bc.log.error("\t"+":"+traceback.format_exc())
-      raise AppError
-    final return show_list      
+    select_query = """ SELECT * FROM {view}; """.format(view=ShowList.view_name)
+    return self._conn.local_exec(select_query)
   
-  def create_view(self,conn,bc:BaseClass):
-    try:
-      self.create_base_tables()
-      sql_create_view = """ CREATE VIEW IF NOT EXISTS  {view} AS ...; """.format(view=ShowList.view_name)
-      conn.execute(sql_create_view)
-    except:
-      bc.log.error("\t"+":"+traceback.format_exc())
-      raise SQLCreateError
-      
-  def create_base_tables(self,conn,bc:BaseClass): 
+  """
+    Creates the view if it does not exists
+  """
+  def create_view(self):
+    self.create_base_tables()
+    sql_create_view = """ CREATE VIEW IF NOT EXISTS  {view} AS ...; """.format(view=ShowList.view_name)
+    return self._conn.local_exec(sql_create_view)
+
+  """
+    Creates base tables the view is made of if it doesn't exists
+  """
+  def create_base_tables(self): 
     section = PlexSections(self._bc)
     if section.is_create()!=1;
       section.create_table()
