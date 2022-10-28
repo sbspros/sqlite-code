@@ -22,7 +22,7 @@ if __name__ == '__main__':
         if not shows.is_created():
             show.create_veiw()
             print("View has been created")
-        print(shows.list_show())
+        print(shows.read_list_show())
     except AppException as err:
         print('Application has stopped, please check error logs')
     except :
