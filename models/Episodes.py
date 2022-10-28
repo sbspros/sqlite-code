@@ -10,6 +10,9 @@ __maintainer__ = "Richard Chamberlain"
 __email__ = "richard@sbspros.ca"
 __status__ = "Dev"
 
+"""
+ Episode is the local copy of the episode data
+"""
 class Episodes():
   table_name='episodes'
   def __init__(self,bc:BaseClass,conn:SqlConnection):
@@ -18,8 +21,7 @@ class Episodes():
       self.create_table()
     
   def is_created(self,conn):
-    create_flag=0
-    sql_table_check="""SELECT EXISTS (
+    return self._conn.local_exec"""SELECT EXISTS (
     SELECT 
         name
     FROM 
@@ -27,24 +29,7 @@ class Episodes():
     WHERE 
         type='table' AND 
         name='{table}'
-    );""".format(table=Episodes.table_name)
-    try:
-      create_flag=self._conn.execute(sql_table_check)
-    except SQLExecError:
-      raise SQLError
-     except:
-      bc.log.error("\t"+":"+traceback.format_exc())
-      raise AppError
-    final return create_flag     
+    );""".format(table=Episodes.table_name))
   
   def create_table(self,conn,bc:BaseClass):
-    create_flag=0
-    sql_create_table = """ CREATE TABLE IF NOT EXISTS  {table} AS ...; """.format(table=Episodes.table_name)
-    try:
-      create_flag=self._conn.execute(sql_create_table)
-    except SQLExecError:
-      raise SQLError
-     except:
-      bc.log.error("\t"+":"+traceback.format_exc())
-      raise AppError
-    final return create_flag 
+    return self._conn.local_exec""" CREATE TABLE IF NOT EXISTS  {table} AS ...; """.format(table=Episodes.table_name))
