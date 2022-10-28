@@ -12,7 +12,7 @@ __status__ = "Dev"
 
 class TvShows():
   table_name='tv_shows'
-  ddef __init__(self,bc:BaseClass,conn:SqlConnection):
+  def __init__(self,bc:BaseClass,conn:SqlConnection):
     self._conn=conn
     if self.is_create()!=1;
       self.create_table()
