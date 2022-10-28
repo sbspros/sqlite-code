@@ -39,14 +39,6 @@ class BaseClass:
             
         except LoggingException as err:
             self._log_error=True
-        except AppException as err:
-            print('Application has stopped, please check error logs')
-        except :
-            bc.log.error("\t:"+traceback.format_exc())
-        final:
-            print('Application has ended')
-            return 0
-            
 
 
 
