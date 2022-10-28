@@ -24,7 +24,7 @@ class ShowList():
     
   def is_created(self):
     create_flag=0
-    """SELECT EXISTS (
+    sql_table_check="""SELECT EXISTS (
     SELECT 
         name
     FROM 
@@ -34,7 +34,7 @@ class ShowList():
         name='{view}'
     );""".format(view=ShowList.view_list)
     try:
-      create_flag=self._conn.execute(sql_create_table)
+      create_flag=self._conn.execute(sql_table_check)
     except SQLExecError:
       raise SQLError
      except:
