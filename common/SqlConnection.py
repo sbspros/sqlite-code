@@ -40,3 +40,15 @@ class SQLConnection():
             self._bc.log.error("\t"+":"+traceback.format_exc())
             raise ConnectFailed
 
+  def local_exec(self,query):
+    create_flag=None
+    try:
+      create_flag=self._conn.execute(query)
+    except SQLExecError:
+      bc.log.error("\t:"+sql_table_check)
+      raise SQLError
+     except:
+      bc.log.error("\t:"+traceback.format_exc())
+      raise AppError
+    final return create_flag      
+            
