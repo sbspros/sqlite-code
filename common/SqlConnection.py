@@ -15,8 +15,17 @@ class ConnectFailed(Exception):
     def __init__(self):
         self.msg = 'Media Finder failed to initialize'
         super().__init__(self.msg)
+        
+class SQLExecError(Exception):
+    def __init__(self):
+        self.msg = 'SQL query failed to run'
+        super().__init__(self.msg)
 
-
+class  SQLError (Exception):
+    def __init__(self):
+        self.msg = 'SQL - General Error'
+        super().__init__(self.msg)       
+        
 class SQLConnection():
 
     def __init__(self,bc:BaseClass,business_object:str,database:str):
@@ -31,13 +40,3 @@ class SQLConnection():
             self._bc.log.error("\t"+":"+traceback.format_exc())
             raise ConnectFailed
 
-    ## Does the table exists
-    def is_created(self):
-        return self._bus_obj.is_created(self._bus_obj,self._conn)
-
-    ## Create table
-    def create_table(self):
-        try:
-            self._bus_obj.create_table(self._bus_obj,self._conn,self._bc)
-        except SQLCreateError as e:
-            pass
