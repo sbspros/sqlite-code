@@ -1,5 +1,5 @@
 import sqlite3
-from common.BaseClass import BaseClass
+from common.BaseClass import BaseClass,AppException
 import traceback
 
 __author__ = "Richard Chamberlain"
@@ -38,7 +38,7 @@ class SQLConnection():
             self._conn=sqlite3.connect(database)
         except:
             self._bc.log.error("\t"+":"+traceback.format_exc())
-            raise ConnectFailed
+            raise AppException
 
   def local_exec(self,query):
     create_flag=None
