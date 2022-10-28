@@ -13,6 +13,8 @@ __email__ = "richard@sbspros.ca"
 __status__ = "Dev"
 
 if __name__ == '__main__':
+    
+    ## Start app base class with ini read and logs
     bc=BaseClass('config.ini')
     conn=SqlConnection('db/media.db')
     shows=ShowList(bc,conn)
