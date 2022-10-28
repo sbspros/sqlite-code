@@ -3,7 +3,7 @@ from model.Episodes import Episodes
 from model.Seasons import Seasons
 from model.TVShows import TVShows
 from model.PlexSections import PlexSections
-from common.SqlConnection import SqlConnection,SQLExecError
+from common.SqlConnection import SqlConnection,SQLExecError,SQLError
 from table.ShowList import ShowList as tableShowList
 import traceback
 
