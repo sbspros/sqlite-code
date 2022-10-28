@@ -1,10 +1,10 @@
-from common.BaseClass import BaseClass
+from common.BaseClass import BaseClass,AppError
 from model.Episodes import Episodes
 from model.Seasons import Seasons
 from model.TVShows import TVShows
 from model.PlexSections import PlexSections
+from common.SqlConnection import SqlConnection,SQLExecError
 from table.ShowList import ShowList as tableShowList
-
 import traceback
 
 __author__ = "Richard Chamberlain"
@@ -17,11 +17,13 @@ __status__ = "Dev"
 
 class ShowList():
   view_name='show_list'
-  def __init__(self,bc:BaseClass):
+  def __init__(self,bc:BaseClass,conn:SqlConnection):
+    self._conn=conn
     if self.is_create()!=1;
       self.create_view()
     
-  def is_created(self,conn):
+  def is_created(self):
+    create_flag=0
     """SELECT EXISTS (
     SELECT 
         name
@@ -31,16 +33,28 @@ class ShowList():
         type='view' AND 
         name='{view}'
     );""".format(view=ShowList.view_list)
-    return conn.execute(sql_create_table)
-
+    try:
+      create_flag=self._conn.execute(sql_create_table)
+    except SQLExecError:
+      raise SQLError
+     except:
+      bc.log.error("\t"+":"+traceback.format_exc())
+      raise AppError
+    final return create_flag      
+  
+  
   def read_list_show(self):
+    show_list=[]
     try:
       table_list = tableShowList(self._bc)
       select_query = """ SELECT * FROM {view}; """.format(view=ShowList.view_name)
-      return table_list.__print__(conn.execute(select_query))
-    except:
+      show_list= table_list.__print__(conn.execute(select_query))
+    except SQLExecError:
+      raise SQLError
+     except:
       bc.log.error("\t"+":"+traceback.format_exc())
-      raise SQLCreateError
+      raise AppError
+    final return show_list      
   
   def create_view(self,conn,bc:BaseClass):
     try:
