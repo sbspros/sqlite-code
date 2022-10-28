@@ -18,7 +18,7 @@ class TvShows():
       self.create_table()
     
   def is_created(self,conn):
-    sql_table_check="""SELECT EXISTS (
+    return self._conn.local_exec("""SELECT EXISTS (
     SELECT 
         name
     FROM 
@@ -26,24 +26,7 @@ class TvShows():
     WHERE 
         type='table' AND 
         name='{table}'
-    );""".format(table=TvShows.table_name)
-    try:
-      create_flag=self._conn.execute(sql_table_check)
-    except SQLExecError:
-      raise SQLError
-     except:
-      bc.log.error("\t"+":"+traceback.format_exc())
-      raise AppError
-    final return create_flag   
+    );""".format(table=TvShows.table_name))
   
   def create_table(self):
-    create_flag=0
-    sql_create_table = """ CREATE TABLE IF NOT EXISTS  {table} AS ...; """.format(table=TvShows.table_name)
-    try:
-      create_flag=self._conn.execute(sql_create_table)
-    except SQLExecError:
-      raise SQLError
-     except:
-      bc.log.error("\t"+":"+traceback.format_exc())
-      raise AppError
-    final return create_flag        
+    return self._conn.local_exec(""" CREATE TABLE IF NOT EXISTS  {table} AS ...; """.format(table=TvShows.table_name))
