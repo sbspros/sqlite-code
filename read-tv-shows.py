@@ -16,9 +16,17 @@ if __name__ == '__main__':
     
     ## Start app base class with ini read and logs
     bc=BaseClass('config.ini')
-    conn=SqlConnection('db/media.db')
-    shows=ShowList(bc,conn)
-    if not shows.is_created():
-        show.create_veiw()
-        print("View has been created")
-    print(shows.list_show())
+    try:
+        conn=SqlConnection('db/media.db')
+        shows=ShowList(bc,conn)
+        if not shows.is_created():
+            show.create_veiw()
+            print("View has been created")
+        print(shows.list_show())
+    except AppException as err:
+        print('Application has stopped, please check error logs')
+    except :
+        bc.log.error("\t:"+traceback.format_exc())
+    final:
+        print('Application has ended')
+    return 0
