@@ -10,6 +10,10 @@ __maintainer__ = "Richard Chamberlain"
 __email__ = "richard@sbspros.ca"
 __status__ = "Dev"
 
+"""
+   Seasons is the seasons information stored locally in the database 
+"""
+
 class Seasons():
   table_name='seasons'
   def __init__(self,bc:BaseClass,conn:SqlConnection):
@@ -18,7 +22,7 @@ class Seasons():
       self.create_table()
     
   def is_created(self):
-    sql_table_check="""SELECT EXISTS (
+     return self._conn.local_exec"""SELECT EXISTS (
     SELECT 
         name
     FROM 
@@ -26,23 +30,7 @@ class Seasons():
     WHERE 
         type='table' AND 
         name='{table}'
-    );""".format(table=Seasons.table_name)
-    try:
-      create_flag=self._conn.execute(sql_table_check)
-    except SQLExecError:
-      raise SQLError
-     except:
-      bc.log.error("\t"+":"+traceback.format_exc())
-      raise AppError
-    final return create_flag     
+    );""".format(table=Seasons.table_name))
   
   def create_table(self,conn,bc:BaseClass):
-    sql_create_table = """ CREATE TABLE IF NOT EXISTS  {table} AS ...; """.format(table=Seasons.table_name)
-    try:
-      create_flag=self._conn.execute(sql_create_table)
-    except SQLExecError:
-      raise SQLError
-     except:
-      bc.log.error("\t"+":"+traceback.format_exc())
-      raise AppError
-    final return create_flag  
+     return self._conn.local_exec""" CREATE TABLE IF NOT EXISTS  {table} AS ...; """.format(table=Seasons.table_name))
