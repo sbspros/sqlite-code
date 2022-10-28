@@ -28,4 +28,10 @@ class PlexSections():
     );""".format(table=PlexSection.table_name))
   
   def create_table(self,conn,bc:BaseClass):
-    return self._conn.local_exec( """ CREATE TABLE IF NOT EXISTS  {table} AS ...; """.format(table=ShowList.table_name))
+    return self._conn.local_exec( """ CREATE TABLE IF NOT EXISTS  {table} AS 
+    	id INT PRIMARY KEY,
+      section_name TEXT NOT NULL,
+	    last_update INT DEFAULT 0,
+      created_date TEXT NOT NULL 
+      modification_date TEXT NOT NULL 
+      ; """.format(table=ShowList.table_name))
