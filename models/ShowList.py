@@ -1,10 +1,9 @@
 from common.BaseClass import BaseClass
-from model.Episodes import Episodes
-from model.Seasons import Seasons
-from model.TVShows import TVShows
-from model.PlexSections import PlexSections
-from common.SqlConnection import SqlConnection
-from table.ShowList import ShowList as tableShowList
+from models.Episodes import Episodes
+from models.Seasons import Seasons
+from models.TvShows import TvShows
+from models.PlexSections import PlexSections
+from common.SQLConnection import SQLConnection
 import traceback
 
 __author__ = "Richard Chamberlain"
@@ -22,9 +21,10 @@ __status__ = "Dev"
 """
 class ShowList():
   view_name='show_list'
-  def __init__(self,bc:BaseClass,conn:SqlConnection):
+  def __init__(self,bc:BaseClass,conn:SQLConnection):
+    self._bc=bc
     self._conn=conn
-    if self.is_create()!=1;
+    if self.is_created()!=1:
       self.create_view()
   """
     Check to see if the view has been created
@@ -38,39 +38,44 @@ class ShowList():
     WHERE 
         type='view' AND 
         name='{view}'
-    );""".format(view=ShowList.view_list))
+    );""".format(view=ShowList.view_name))
   
   """
     Reads all records from the view
   """
   def read_list_show(self):
-    return self._conn.local_exec(select_query = """ SELECT * FROM {view}; """.format(view=ShowList.view_name))
+    return self._conn.local_exec(""" SELECT * FROM {view}; """.format(view=ShowList.view_name))
   
   """
     Creates the view if it does not exists
   """
   def create_view(self):
     self.create_base_tables()
-    return self._conn.local_exec(""" CREATE VIEW IF NOT EXISTS  {view} AS ...; """.format(view=ShowList.view_name))
+    return self._conn.local_exec(""" CREATE VIEW IF NOT EXISTS {view_name} AS SELECT  section_name, show_name, season_num, episode_num,status
+        FROM plex_sections AS P
+        JOIN tv_shows AS T
+          ON P.id =T.sec_id
+        JOIN seasons AS S
+          ON T.id = S.show_id
+        JOIN episodes AS E
+          ON S.id = E.season_id ; """.format(view_name=ShowList.view_name))
 
   """
     Creates base tables the view is made of if it doesn't exists
   """
   def create_base_tables(self): 
-    section = PlexSections(self._bc)
-    if section.is_create()!=1;
+    section = PlexSections(self._bc,self._conn)
+    if section.is_created()!=1:
       section.create_table()
 
-    shows = TvShows(self._bc)
-    if shows.is_create()!=1;
+    shows = TvShows(self._bc,self._conn)
+    if shows.is_created()!=1:
       shows.create_table()
 
-    seasons = Seasons(self._bc)
-    if seasons.is_create()!=1;
+    seasons = Seasons(self._bc,self._conn)
+    if seasons.is_created()!=1:
       seasons.create_table()
 
-    episodes = Episodes(self._bc)
-    if episodes.is_create()!=1;
+    episodes = Episodes(self._bc,self._conn)
+    if episodes.is_created()!=1:
       episodes.create_table()
-
-      
