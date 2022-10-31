@@ -1,8 +1,9 @@
-from common.BaseClass import BaseClass
-from common.SqlConnection import SqlConnection
+from common.BaseClass import BaseClass,AppException
+from common.SQLConnection import SQLConnection
 from models.ShowList import ShowList
 import os
 import inspect
+import traceback
 
 __author__ = "Richard Chamberlain"
 __copyright__ = "Copyright 2022"
@@ -16,8 +17,9 @@ if __name__ == '__main__':
     
     ## Start app base class with ini read and logs
     bc=BaseClass('config.ini')
+    bc.log.info("\t:App has started")
     try:
-        conn=SqlConnection('db/media.db')
+        conn=SQLConnection(bc,'db/media.db')
         shows=ShowList(bc,conn)
         if not shows.is_created():
             show.create_veiw()
@@ -27,6 +29,5 @@ if __name__ == '__main__':
         print('Application has stopped, please check error logs')
     except :
         bc.log.error("\t:"+traceback.format_exc())
-    final:
+    finally:
         print('Application has ended')
-    return 0
